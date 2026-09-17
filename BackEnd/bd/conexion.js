@@ -6,7 +6,7 @@ createpool({
     host : "localhost",
     port : 3306,
     passwoerd: "1234",
-    database:"proyectoarchivo"
+    database:"proyectoArchivo"
 
 
 })
