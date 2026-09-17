@@ -1,12 +1,13 @@
-const msyql = requiere
-("msyql2/promise");
+const msyql = require("mysql2/promise");
 
-const pool = msyql.msyql.
-createpool({
+const pool = msyql.createPool({
     host : "localhost",
     port : 3306,
-    passwoerd: "1234",
-    database:"proyectoarchivo"
+    user: "root",
+    password: "1234",
+    database:"archivohistorico_bd"
 
 
 })
+
+module.exports = pool;
