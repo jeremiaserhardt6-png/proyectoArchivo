@@ -1,10 +1,13 @@
 const express = require("express");
 const pool = require("./bd/conexion")
+const routerMateriales = require("./rutas/material")
 
 const app=express();
 const PORT =3000;
 
 app.use(express.json());
+
+app.use("/api/materiales", routerMateriales)
 
 
 async function probarConexion() {
