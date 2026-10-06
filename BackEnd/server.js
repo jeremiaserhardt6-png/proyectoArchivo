@@ -1,6 +1,9 @@
 const express = require("express");
 const pool = require("./bd/conexion")
 const routerMateriales = require("./rutas/material")
+const loginRouter = require("./rutas/login")
+
+const autoresRouter = ("./rutas/autores")
 
 const app=express();
 const PORT =3000;
@@ -8,7 +11,8 @@ const PORT =3000;
 app.use(express.json());
 
 app.use("/api/materiales", routerMateriales)
-
+app.use("/api/login", loginRouter)
+app.use("/api/autores", autoresRouter)
 
 async function probarConexion() {
       try {
