@@ -2,8 +2,7 @@ const express = require("express");
 const pool = require("./bd/conexion")
 const routerMateriales = require("./rutas/material")
 const loginRouter = require("./rutas/login")
-
-const autoresRouter = ("./rutas/autores")
+const autoresRouter = require("./rutas/autores")
 
 const app=express();
 const PORT =3000;

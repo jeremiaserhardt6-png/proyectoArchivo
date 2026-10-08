@@ -1,10 +1,20 @@
 import tkinter as tk
-
+from frames.autores import crear_autores
 
 def crear_inicio(parent):
     # Frame principal
     frame = tk.Frame(parent, bg="#f2f4f6")
     frame.pack(fill="both", expand=True)
+
+    def abrir_autores():
+        vent = tk.Toplevel(frame)
+        vent.geometry("1000x650")
+        frame_autores =  crear_autores(vent)
+        frame_autores.pack(
+            fill="both",
+            expand=True
+        )
+    abrir_autores()
 
     # =========================
     # BARRA LATERAL
