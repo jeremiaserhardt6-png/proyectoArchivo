@@ -15,6 +15,7 @@ API_URL = "http://localhost:3000/api/autores"
 # ============================================================
 
 def crear_autores(parent):
+    autor_seleccionado = {"id": None}
 
     # --------------------------------------------------------
     # COLORES
@@ -108,39 +109,6 @@ def crear_autores(parent):
     )
 
     # --------------------------------------------------------
-    # ID AUTOR
-    # --------------------------------------------------------
-
-    tk.Label(
-        formulario,
-        text="ID Autor:",
-        font=("Arial", 10, "bold"),
-        bg=COLOR_GRIS_CLARO,
-        fg=COLOR_NEGRO
-    ).grid(
-        row=0,
-        column=0,
-        sticky="w",
-        padx=(0, 8),
-        pady=5
-    )
-
-    entry_id = tk.Entry(
-        formulario,
-        font=("Arial", 10),
-        relief="solid",
-        bd=1
-    )
-
-    entry_id.grid(
-        row=0,
-        column=1,
-        sticky="ew",
-        padx=(0, 30),
-        pady=5
-    )
-
-    # --------------------------------------------------------
     # NOMBRE
     # --------------------------------------------------------
 
@@ -152,7 +120,7 @@ def crear_autores(parent):
         fg=COLOR_NEGRO
     ).grid(
         row=0,
-        column=2,
+        column=0,
         sticky="w",
         padx=(0, 8),
         pady=5
@@ -167,8 +135,9 @@ def crear_autores(parent):
 
     entry_nombre.grid(
         row=0,
-        column=3,
+        column=1,
         sticky="ew",
+        padx=(0, 30),
         pady=5
     )
 
@@ -200,13 +169,12 @@ def crear_autores(parent):
     entry_apellido.grid(
         row=1,
         column=1,
-        columnspan=3,
+        columnspan=1,
         sticky="ew",
         pady=5
     )
 
     formulario.columnconfigure(1, weight=1)
-    formulario.columnconfigure(3, weight=2)
 
     # ========================================================
     # FUNCIONES
@@ -214,11 +182,11 @@ def crear_autores(parent):
 
     def limpiar():
 
-        entry_id.delete(0, tk.END)
+        autor_seleccionado["id"] = None
         entry_nombre.delete(0, tk.END)
         entry_apellido.delete(0, tk.END)
 
-        entry_id.focus()
+        entry_nombre.focus()
 
         # Quitar selección de la tabla
         for item in tabla.selection():
@@ -257,8 +225,8 @@ def crear_autores(parent):
                 tabla.insert(
                     "",
                     "end",
+                    iid=str(autor.get("id_autor", "")),
                     values=(
-                        autor.get("id_autor", ""),
                         autor.get("nombre", ""),
                         autor.get("apellido", "")
                     )
@@ -303,27 +271,20 @@ def crear_autores(parent):
 
         valores = item["values"]
 
-        limpiar_campos = False
-
-        entry_id.delete(0, tk.END)
         entry_nombre.delete(0, tk.END)
         entry_apellido.delete(0, tk.END)
+        autor_seleccionado["id"] = seleccion[0]
 
-        if len(valores) >= 3:
+        if len(valores) >= 2:
 
-            entry_id.insert(
+            entry_nombre.insert(
                 0,
                 valores[0]
             )
 
-            entry_nombre.insert(
-                0,
-                valores[1]
-            )
-
             entry_apellido.insert(
                 0,
-                valores[2]
+                valores[1]
             )
 
     # --------------------------------------------------------
@@ -401,11 +362,11 @@ def crear_autores(parent):
 
     def modificar():
 
-        id_autor = entry_id.get().strip()
+        id_autor = autor_seleccionado["id"]
         nombre = entry_nombre.get().strip()
         apellido = entry_apellido.get().strip()
 
-        if id_autor == "":
+        if not id_autor:
 
             messagebox.showwarning(
                 "Seleccionar autor",
@@ -484,9 +445,9 @@ def crear_autores(parent):
 
     def eliminar():
 
-        id_autor = entry_id.get().strip()
+        id_autor = autor_seleccionado["id"]
 
-        if id_autor == "":
+        if not id_autor:
 
             messagebox.showwarning(
                 "Seleccionar autor",
@@ -741,7 +702,6 @@ def crear_autores(parent):
     tabla = ttk.Treeview(
         tabla_frame,
         columns=(
-            "id",
             "nombre",
             "apellido"
         ),
@@ -757,11 +717,6 @@ def crear_autores(parent):
     # Encabezados
 
     tabla.heading(
-        "id",
-        text="Id_Autor"
-    )
-
-    tabla.heading(
         "nombre",
         text="Nombre"
     )
@@ -774,20 +729,14 @@ def crear_autores(parent):
     # Anchos
 
     tabla.column(
-        "id",
-        width=150,
-        anchor="w"
-    )
-
-    tabla.column(
         "nombre",
-        width=250,
+        width=320,
         anchor="w"
     )
 
     tabla.column(
         "apellido",
-        width=250,
+        width=320,
         anchor="w"
     )
 

@@ -50,11 +50,52 @@ router.post("/", async (req, res) => {
 
 
 // LISTAR TODOS LOS MATERIALES
+
+ // LISTAR TODOS LOS MATERIALES CON SUS DATOS RELACIONADOS
 router.get("/", async (req, res) => {
     try {
-        const [materiales] = await pool.execute(
-            `SELECT * FROM material`
-        );
+        const [materiales] = await pool.execute(`
+            SELECT
+                m.id_material,
+                m.titulo,
+                m.anio,
+                m.descripcion,
+                m.ubicacion,
+
+                m.id_tipo,
+                t.nombredeltipo AS tipo_material,
+
+                m.id_autor,
+                CONCAT_WS(' ', a.nombre, a.apellido) AS autor,
+
+                m.id_persona,
+                CONCAT_WS(' ', p.nombre, p.apellido) AS persona,
+
+                m.id_categoria,
+                c.nombre AS categoria,
+
+                m.id_coleccion,
+                co.nombre AS coleccion
+
+            FROM material m
+
+            LEFT JOIN tipodematerial t
+                ON m.id_tipo = t.id_tipo
+
+            LEFT JOIN autor a
+                ON m.id_autor = a.id_autor
+
+            LEFT JOIN persona p
+                ON m.id_persona = p.id_persona
+
+            LEFT JOIN categoria c
+                ON m.id_categoria = c.id_categoria
+
+            LEFT JOIN coleccion co
+                ON m.id_coleccion = co.id_coleccion
+
+            ORDER BY m.id_material DESC
+        `);
 
         return res.status(200).json(materiales);
 
@@ -65,6 +106,7 @@ router.get("/", async (req, res) => {
         });
     }
 });
+
 
 
 // EDITAR MATERIAL
@@ -156,6 +198,7 @@ router.delete("/:id", async (req, res) => {
         });
     }
 });
+
 
 
 module.exports = router;

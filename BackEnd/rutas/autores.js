@@ -12,20 +12,20 @@ router.post("/", async (req, res) => {
 
     const {
         nombre,
-        apellido,
-        fecha_nacimiento
+        apellido
+
     } = req.body;
 
     try {
 
         const [resultado] = await pool.execute(
-            `INSERT INTO autores
-            (nombre, apellido, fecha_nacimiento)
-            VALUES (?, ?, ?)`,
+            `INSERT INTO autor
+            (nombre, apellido)
+            VALUES (?, ?)`,
             [
                 nombre,
-                apellido,
-                fecha_nacimiento
+                apellido
+        
             ]
         );
 
@@ -55,7 +55,7 @@ router.get("/", async (req, res) => {
     try {
 
         const [autores] = await pool.execute(
-            `SELECT * FROM autores`
+            `SELECT * FROM autor`
         );
 
         return res.status(200).json(autores);
@@ -82,22 +82,19 @@ router.put("/:id", async (req, res) => {
 
     const {
         nombre,
-        apellido,
-        fecha_nacimiento
+        apellido
     } = req.body;
 
     try {
 
         const [resultado] = await pool.execute(
-            `UPDATE autores
+            `UPDATE autor
              SET nombre = ?,
-                 apellido = ?,
-                 fecha_nacimiento = ?
+                 apellido = ?
              WHERE id_autor = ?`,
             [
                 nombre,
                 apellido,
-                fecha_nacimiento,
                 id
             ]
         );
@@ -137,7 +134,7 @@ router.delete("/:id", async (req, res) => {
     try {
 
         const [resultado] = await pool.execute(
-            `DELETE FROM autores
+            `DELETE FROM autor
              WHERE id_autor = ?`,
             [id]
         );

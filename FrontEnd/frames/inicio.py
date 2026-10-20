@@ -1,97 +1,31 @@
+
 import tkinter as tk
+from tkinter import messagebox
+
 from frames.autores import crear_autores
+from frames.materiales import crear_materiales
+from frames.usuarios import crear_usuario
+from frames.personas import crear_personas
+
+
+COLOR_FONDO = "#f2f4f6"
+COLOR_MENU = "#65002d"
+COLOR_MENU_ACTIVO = "#8a1748"
+COLOR_BORDO = "#800033"
+COLOR_BLANCO = "#ffffff"
+COLOR_TEXTO = "#202020"
+
 
 def crear_inicio(parent):
-    # Frame principal
-    frame = tk.Frame(parent, bg="#f2f4f6")
-    frame.pack(fill="both", expand=True)
+    frame = tk.Frame(parent, bg=COLOR_FONDO)
 
-    def abrir_autores():
-        vent = tk.Toplevel(frame)
-        vent.geometry("1000x650")
-        frame_autores =  crear_autores(vent)
-        frame_autores.pack(
-            fill="both",
-            expand=True
-        )
-    abrir_autores()
-
-    # =========================
-    # BARRA LATERAL
-    # =========================
-    menu = tk.Frame(
-        frame,
-        bg="#65002d",
-        width=135
-    )
+    # MENU LATERAL
+    menu = tk.Frame(frame, bg=COLOR_MENU, width=135)
     menu.pack(side="left", fill="y")
     menu.pack_propagate(False)
 
-    # Título del sistema
-    titulo_menu = tk.Label(
-        menu,
-        text="📜  Archivo\nHistórico",
-        font=("Arial", 11, "bold"),
-        fg="white",
-        bg="#65002d",
-        justify="left"
-    )
-    titulo_menu.pack(pady=(15, 25), padx=15, anchor="w")
-
-    # Opciones del menú
-    opciones = [
-        ("⌂", "Inicio"),
-        ("✎", "Autores"),
-        ("▮", "Materiales"),
-        ("●", "Personas"),
-        ("♟", "Usuarios")
-    ]
-
-    for icono, texto in opciones:
-        boton = tk.Button(
-            menu,
-            text=f"{icono}   {texto}",
-            font=("Arial", 10, "bold"),
-            fg="white",
-            bg="#65002d",
-            activebackground="#8a1748",
-            activeforeground="white",
-            bd=0,
-            relief="flat",
-            anchor="w",
-            padx=15
-        )
-        boton.pack(fill="x", ipady=8)
-
-    # Separador
-    tk.Frame(
-        menu,
-        bg="#8a1748",
-        height=1
-    ).pack(fill="x", padx=10, pady=(35, 15))
-
-    # Cerrar sesión
-    cerrar = tk.Button(
-        menu,
-        text="↪   Cerrar sesión",
-        font=("Arial", 10, "bold"),
-        fg="white",
-        bg="#65002d",
-        activebackground="#8a1748",
-        activeforeground="white",
-        bd=0,
-        anchor="w",
-        padx=15
-    )
-    cerrar.pack(fill="x", ipady=8)
-
-    # =========================
-    # CONTENIDO PRINCIPAL
-    # =========================
-    contenido = tk.Frame(
-        frame,
-        bg="#f2f4f6"
-    )
+    # AREA DE CONTENIDO
+    contenido = tk.Frame(frame, bg=COLOR_FONDO)
     contenido.pack(
         side="right",
         fill="both",
@@ -100,123 +34,216 @@ def crear_inicio(parent):
         pady=10
     )
 
-    # Encabezado
-    encabezado = tk.Frame(
-        contenido,
-        bg="#800033",
-        height=48
-    )
-    encabezado.pack(fill="x")
-    encabezado.pack_propagate(False)
+    botones_menu = {}
 
-    tk.Label(
-        encabezado,
-        text="⌂",
-        font=("Arial", 23, "bold"),
-        fg="white",
-        bg="#800033"
-    ).pack(side="left", padx=(15, 10))
+    # LIMPIAR CONTENIDO
+    def limpiar_contenido():
+        for widget in contenido.winfo_children():
+            widget.destroy()
 
-    tk.Label(
-        encabezado,
-        text="Inicio",
-        font=("Arial", 15, "bold"),
-        fg="white",
-        bg="#800033"
-    ).pack(side="left")
+    # MARCAR OPCION ACTIVA
+    def marcar_activo(nombre):
+        for texto, boton in botones_menu.items():
+            color = (
+                COLOR_MENU_ACTIVO
+                if texto == nombre
+                else COLOR_MENU
+            )
+            boton.config(bg=color)
 
-    # =========================
-    # BIENVENIDA
-    # =========================
-    bienvenida = tk.Label(
-        contenido,
-        text="Bienvenido al Archivo Histórico",
-        font=("Arial", 19, "bold"),
-        fg="#65002d",
-        bg="#f2f4f6"
-    )
-    bienvenida.pack(pady=(15, 2))
+    # MOSTRAR UNA VISTA
+    def mostrar_vista(nombre, funcion):
+        limpiar_contenido()
+        marcar_activo(nombre)
 
-    descripcion = tk.Label(
-        contenido,
-        text="Desde este sistema podés administrar la información histórica.",
-        font=("Arial", 10),
-        fg="#202020",
-        bg="#f2f4f6"
-    )
-    descripcion.pack()
+        nuevo_frame = funcion(contenido)
+        nuevo_frame.pack(fill="both", expand=True)
 
-    # =========================
-    # TARJETAS
-    # =========================
-    tarjetas = tk.Frame(
-        contenido,
-        bg="#f2f4f6"
-    )
-    tarjetas.pack(
-        fill="both",
-        expand=True,
-        padx=15,
-        pady=20
-    )
+    # PANTALLA DE INICIO
+    def mostrar_inicio_contenido():
+        limpiar_contenido()
+        marcar_activo("Inicio")
 
-    datos = [
-        ("✎", "Autores"),
-        ("▮", "Materiales"),
-        ("●", "Personas"),
-        ("♟", "Usuarios")
-    ]
-
-    for icono, nombre in datos:
-
-        tarjeta = tk.Frame(
-            tarjetas,
-            bg="white",
-            highlightbackground="#c8d0d8",
-            highlightthickness=1
+        encabezado = tk.Frame(
+            contenido,
+            bg=COLOR_BORDO,
+            height=48
         )
+        encabezado.pack(fill="x")
+        encabezado.pack_propagate(False)
 
-        tarjeta.pack(
-            side="left",
-            fill="both",
-            expand=True,
-            padx=5
-        )
-
-        # Ícono
         tk.Label(
-            tarjeta,
-            text=icono,
-            font=("Arial", 30, "bold"),
-            fg="#5f6870",
-            bg="white"
+            encabezado,
+            text="Inicio",
+            font=("Arial", 15, "bold"),
+            fg=COLOR_BLANCO,
+            bg=COLOR_BORDO
+        ).pack(side="left", padx=15)
+
+        tk.Label(
+            contenido,
+            text="Bienvenido al Archivo Historico",
+            font=("Arial", 19, "bold"),
+            fg=COLOR_MENU,
+            bg=COLOR_FONDO
         ).pack(pady=(15, 2))
 
-        # Nombre
         tk.Label(
-            tarjeta,
-            text=nombre,
-            font=("Arial", 12, "bold"),
-            fg="#65002d",
-            bg="white"
-        ).pack(pady=2)
+            contenido,
+            text="Desde este sistema podes administrar "
+                 "la informacion historica.",
+            font=("Arial", 10),
+            fg=COLOR_TEXTO,
+            bg=COLOR_FONDO
+        ).pack()
 
-        # Botón
-        tk.Button(
-            tarjeta,
-            text="Administrar",
-            font=("Arial", 10, "bold"),
-            fg="white",
-            bg="#800033",
-            activebackground="#65002d",
-            activeforeground="white",
-            bd=0,
-            padx=20,
-            pady=5
-        ).pack(
-            fill="x",
-            padx=12,
-            pady=(10, 15)
+        tarjetas = tk.Frame(contenido, bg=COLOR_FONDO)
+        tarjetas.pack(
+            fill="both",
+            expand=True,
+            padx=15,
+            pady=20
         )
+
+        tarjetas_datos = [
+            ("Autores", crear_autores),
+            ("Materiales", crear_materiales),
+            ("Personas", crear_personas),
+            ("Usuarios", crear_usuario)
+        ]
+
+        for nombre, funcion in tarjetas_datos:
+            tarjeta = tk.Frame(
+                tarjetas,
+                bg=COLOR_BLANCO,
+                highlightbackground="#c8d0d8",
+                highlightthickness=1
+            )
+            tarjeta.pack(
+                side="left",
+                fill="both",
+                expand=True,
+                padx=5
+            )
+
+            tk.Label(
+                tarjeta,
+                text=nombre,
+                font=("Arial", 12, "bold"),
+                fg=COLOR_MENU,
+                bg=COLOR_BLANCO
+            ).pack(pady=(25, 8))
+
+            tk.Button(
+                tarjeta,
+                text="Administrar",
+                font=("Arial", 10, "bold"),
+                fg=COLOR_BLANCO,
+                bg=COLOR_BORDO,
+                activebackground=COLOR_MENU,
+                activeforeground=COLOR_BLANCO,
+                bd=0,
+                cursor="hand2",
+                command=lambda n=nombre, f=funcion:
+                    mostrar_vista(n, f)
+            ).pack(
+                fill="x",
+                padx=12,
+                pady=(10, 15)
+            )
+
+    # ENCABEZADO DEL MENU
+    tk.Label(
+        menu,
+        text="Archivo\nHistorico",
+        font=("Arial", 11, "bold"),
+        fg=COLOR_BLANCO,
+        bg=COLOR_MENU,
+        justify="left"
+    ).pack(
+        pady=(15, 25),
+        padx=15,
+        anchor="w"
+    )
+
+    # OPCIONES DEL MENU
+    opciones = [
+        ("Inicio", mostrar_inicio_contenido),
+        (
+            "Autores",
+            lambda: mostrar_vista("Autores", crear_autores)
+        ),
+        (
+            "Materiales",
+            lambda: mostrar_vista("Materiales", crear_materiales)
+        ),
+        (
+            "Personas",
+            lambda: mostrar_vista("Personas", crear_personas)
+        ),
+        (
+            "Usuarios",
+            lambda: mostrar_vista("Usuarios", crear_usuario)
+        )
+    ]
+
+    for nombre, comando in opciones:
+        boton = tk.Button(
+            menu,
+            text=nombre,
+            font=("Arial", 10, "bold"),
+            fg=COLOR_BLANCO,
+            bg=COLOR_MENU,
+            activebackground=COLOR_MENU_ACTIVO,
+            activeforeground=COLOR_BLANCO,
+            bd=0,
+            relief="flat",
+            anchor="w",
+            padx=15,
+            cursor="hand2",
+            command=comando
+        )
+        boton.pack(fill="x", ipady=8)
+        botones_menu[nombre] = boton
+
+    # SEPARADOR
+    tk.Frame(
+        menu,
+        bg=COLOR_MENU_ACTIVO,
+        height=1
+    ).pack(
+        fill="x",
+        padx=10,
+        pady=(35, 15)
+    )
+
+    # CERRAR SESION
+    def cerrar_sesion():
+        confirmar = messagebox.askyesno(
+            "Cerrar sesion",
+            "Deseas cerrar la sesion?"
+        )
+
+        if confirmar:
+            ventana = parent.winfo_toplevel()
+            ventana.destroy()
+
+    tk.Button(
+        menu,
+        text="Cerrar sesion",
+        font=("Arial", 10, "bold"),
+        fg=COLOR_BLANCO,
+        bg=COLOR_MENU,
+        activebackground=COLOR_MENU_ACTIVO,
+        activeforeground=COLOR_BLANCO,
+        bd=0,
+        anchor="w",
+        padx=15,
+        cursor="hand2",
+        command=cerrar_sesion
+    ).pack(fill="x", ipady=8)
+
+    # MOSTRAR INICIO AL ABRIR
+    mostrar_inicio_contenido()
 
     return frame
